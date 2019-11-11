@@ -89,7 +89,7 @@ public class GameScreen implements Screen {
 		// begin a new batch and draw the bucket and
 		// all drops
 		game.batch.begin();
-		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, screenH);
+		game.font.draw(game.batch, "Asteroids Collected: " + dropsGathered, 0, screenH);
 		spaceship.render(game.batch);
 		
 		asteroids.render(game.batch, Gdx.graphics.getDeltaTime());

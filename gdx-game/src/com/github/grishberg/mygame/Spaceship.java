@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
 
 public class Spaceship {
-	private static final float ROTATE_SPEED = 50;
+	private static final float ROTATE_SPEED = 300;
 	private int spaceshipW = 64;
 	private int spaceshipH = 64;
 	private final int screenW;
@@ -47,12 +47,12 @@ public class Spaceship {
 	}
 	
 	public void onLeftPressed(float timeDelta){
-		angle -= ROTATE_SPEED * timeDelta;
+		angle += ROTATE_SPEED * timeDelta;
 		checkBounds();
 	}
 	
 	public void onRightPressed(float timeDelta){
-		angle += ROTATE_SPEED * timeDelta;
+		angle -= ROTATE_SPEED * timeDelta;
 		checkBounds();
 	}
 	
@@ -64,9 +64,10 @@ public class Spaceship {
 	private void checkBounds() {
 		// make sure the bucket stays within the screen bounds
 		if (bucket.x < 0)
+			bucket.x = screenW;
+		if (bucket.x > screenW)
 			bucket.x = 0;
-		if (bucket.x > screenW - 64)
-			bucket.x = screenW - 64;
+			
 		if(bucket.y < 0) {
 			bucket.y = screenH;
 		}
@@ -80,11 +81,14 @@ public class Spaceship {
 	}
 	
 	public void render(SpriteBatch batch) {
+		sprite.setCenter(bucket.x,bucket.y);
+		sprite.setOrigin(spaceshipW/2, spaceshipH/2);
+		sprite.setRotation(angle -90f);
+		
 		bucket.x += speed * Math.cos(angle * MathUtils.degRad);
 		bucket.y += speed * Math.sin(angle * MathUtils.degRad );
-		sprite.rotate(angle);
 		
-		sprite.setRotation(angle -90f);
+		
 		sprite.setSize(spaceshipW, spaceshipH);
 		sprite.setPosition(bucket.x, bucket.y);
 		//sprite.setPosition(bucket.x + radius * (float)Math.cos(angle * MathUtils.degrad), bucket.y + radius * (float)Math.sin(angle * MathUtils.degrad));
