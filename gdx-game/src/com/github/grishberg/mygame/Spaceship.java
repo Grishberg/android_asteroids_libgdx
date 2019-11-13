@@ -6,15 +6,20 @@ import com.badlogic.gdx.math.*;
 
 public class Spaceship {
 	private static final float ROTATE_SPEED = 300;
+	private static final float MAX_SPEED = 7;
 	private int spaceshipW = 64;
 	private int spaceshipH = 64;
 	private final int screenW;
 	private final int screenH;
 	private int x;
 	private int y;
-	private float angle = 90f;
-	private float speed;
-	
+	private double momentumAnle;
+	private float angle = 0;
+	private double speed = 0;
+	private float speedX;
+	private float speedY;
+	private double momentumX;
+	private double momentumY;
 	Rectangle bucket;
 	
 	Texture bucketImage;
@@ -34,6 +39,9 @@ public class Spaceship {
 		bucket.height = spaceshipH;
 	}
 	
+	void drawDebug(SpriteBatch batch, BitmapFont font) {
+	}
+	
 	public void onTouched(Vector3 touchPos, float timeDelta ) {
 		if (touchPos.x < screenW/3){
 			onLeftPressed(timeDelta);
@@ -42,23 +50,33 @@ public class Spaceship {
 		} else {
 			onRightPressed(timeDelta);
 		}
-
-		checkBounds();
 	}
 	
 	public void onLeftPressed(float timeDelta){
 		angle += ROTATE_SPEED * timeDelta;
-		checkBounds();
 	}
 	
 	public void onRightPressed(float timeDelta){
 		angle -= ROTATE_SPEED * timeDelta;
-		checkBounds();
 	}
 	
-	public void onMovePressed(float timeDelta){
-		speed += 8 * timeDelta;
-		checkBounds();
+	public void onMovePressed(float timeDelta) {
+		double mX = Math.cos(momentumAnle * MathUtils.degRad) * speed;
+		double mY = Math.sin(momentumAnle * MathUtils.degRad) * speed;
+		
+		float powerDelta = 8f * timeDelta;
+		momentumX = powerDelta * Math.cos(angle * MathUtils.degRad);
+		momentumY = powerDelta * Math.sin(angle * MathUtils.degRad);
+		double dx = mX + momentumX;
+		double dy = mY + momentumY;
+		speedX = (float) dx;
+		speedY = (float) dy;
+		double ang = Math.atan2(dy, dx) * MathUtils.radDeg;
+		momentumAnle = ang;
+		speed = Math.sqrt(dx*dx + dy*dy);
+		if(speed > MAX_SPEED){
+			speed = MAX_SPEED;
+		}
 	}
 	
 	private void checkBounds() {
@@ -83,17 +101,16 @@ public class Spaceship {
 	public void render(SpriteBatch batch) {
 		sprite.setCenter(bucket.x,bucket.y);
 		sprite.setOrigin(spaceshipW/2, spaceshipH/2);
-		sprite.setRotation(angle -90f);
+		sprite.setRotation(angle-90);
 		
-		bucket.x += speed * Math.cos(angle * MathUtils.degRad);
-		bucket.y += speed * Math.sin(angle * MathUtils.degRad );
+		bucket.x += speed * Math.cos((momentumAnle) * MathUtils.degRad);
+		bucket.y += speed * Math.sin((momentumAnle) * MathUtils.degRad );
 		
 		
 		sprite.setSize(spaceshipW, spaceshipH);
 		sprite.setPosition(bucket.x, bucket.y);
-		//sprite.setPosition(bucket.x + radius * (float)Math.cos(angle * MathUtils.degrad), bucket.y + radius * (float)Math.sin(angle * MathUtils.degrad));
 		sprite.draw(batch);
-		//batch.draw(bucketImage, bucket.x, bucket.y, spaceshipW, spaceshipH);
+		checkBounds();
 	}
 	
 	public void dispose(){

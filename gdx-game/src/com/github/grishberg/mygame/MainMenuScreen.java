@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class MainMenuScreen implements Screen {
+	private static final int W = 800;
+	private static final int H = 480;
+	
 	final Drop game;
 	OrthographicCamera camera;
 
@@ -13,7 +16,7 @@ public class MainMenuScreen implements Screen {
 		game = gam;
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 480, 800);
+		camera.setToOrtho(false, W, H);
 
 	}
 

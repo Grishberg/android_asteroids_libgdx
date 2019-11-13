@@ -22,6 +22,9 @@ import com.badlogic.gdx.*;
 
 public class GameScreen implements Screen {
 	private static final String TAG = GameScreen.class.getSimpleName();
+	private static final int W = 800;
+	private static final int H = 480;
+	
   	final Drop game;
 
 	Texture dropImage;
@@ -34,8 +37,8 @@ public class GameScreen implements Screen {
 	
 	int dropsGathered;
 	
-	private int screenW = 480;
-	private int screenH = 800;
+	private int screenW = W;
+	private int screenH = H;
 	private final Spaceship spaceship;
 	private final Asteroids asteroids;
 	
@@ -90,6 +93,7 @@ public class GameScreen implements Screen {
 		// all drops
 		game.batch.begin();
 		game.font.draw(game.batch, "Asteroids Collected: " + dropsGathered, 0, screenH);
+		spaceship.drawDebug(game.batch, game.font);
 		spaceship.render(game.batch);
 		
 		asteroids.render(game.batch, Gdx.graphics.getDeltaTime());
@@ -106,6 +110,9 @@ public class GameScreen implements Screen {
 			spaceship.onLeftPressed(Gdx.graphics.getDeltaTime());
 		if (Gdx.input.isKeyPressed(Keys.RIGHT))
 			spaceship.onRightPressed(Gdx.graphics.getDeltaTime());
+		if (Gdx.input.isKeyPressed(Keys.UP))
+			spaceship.onMovePressed(Gdx.graphics.getDeltaTime());
+		
 
 		dropsGathered = asteroids.checkOverlaps(spaceship, Gdx.graphics.getDeltaTime());
 	}
